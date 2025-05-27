@@ -3,23 +3,24 @@ import Implementaciones.GrafoEstatico;
 public class Principal{
 public static void main(String[] args) {
     GrafoEstatico grafo = new GrafoEstatico();
-    grafo.agregarNodo(4);
     grafo.agregarNodo(1);
-    grafo.agregarNodo(50);
-    grafo.agregarNodo(7);
-    grafo.agregarNodo(100);
+    grafo.agregarNodo(2);
+    grafo.agregarNodo(3);
+    grafo.agregarNodo(4);
+    grafo.agregarNodo(5);
 
-    grafo.agregarArista(4, 1, 10);
-    grafo.agregarArista(50, 4, 7);
-    grafo.agregarArista(100, 7, 90);
-    grafo.agregarArista(50, 1, 3);
-    grafo.agregarArista(7, 4, 43);
-    grafo.agregarArista(7, 1, 20);
-    grafo.agregarArista(1, 7, 200);
+    grafo.agregarArista(1, 2, 10);
+    grafo.agregarArista(1, 3, 13);
+    grafo.agregarArista(2, 4, 5);
+    grafo.agregarArista(2, 5, 100);
+    grafo.agregarArista(2, 3, 5);
+    grafo.agregarArista(3, 4, 1);
+    grafo.agregarArista(4, 5, 50);
+    grafo.agregarArista(5, 2, 100);
 
-    grafo.eliminarArista(50,1);
-    grafo.eliminarNodo(4);
+    grafo.eliminarNodo(3);
     grafo.imprimirGrafo();
+    grafo.djkstra(1, 5);
 }
 
 }

@@ -51,6 +51,74 @@ public class GrafoEstatico implements GrafosTDA {
             arista[a][b] = 0;
         }
     }
+
+   public void djkstra(int principio, int fin) {
+    int[] distancias = new int[5];
+    boolean[] visitado = new boolean[5];
+    int[] padre = new int[5];  // Para reconstruir el camino
+
+    for (int i = 0; i < 5; i++) {
+        distancias[i] = 9999;
+        visitado[i] = false;
+        padre[i] = -1;
+    }
+
+    int indexPrincipio = buscarIndice(principio);
+    int indexFin = buscarIndice(fin);
+
+    if (indexPrincipio == -1 || indexFin == -1) {
+        System.out.println("Uno de los nodos no existen en el grafo.");
+        return;
+    }
+
+    distancias[indexPrincipio] = 0;
+
+    for (int i = 0; i < 5; i++) {
+        int nodoMinDist = -1;
+        int minDist = 9999;
+
+        for (int j = 0; j < 5; j++) {
+            if (!visitado[j] && distancias[j] < minDist && grafo[j] != 0) {
+                minDist = distancias[j];
+                nodoMinDist = j;
+            }
+        }
+
+        if (nodoMinDist == -1) break;
+
+        visitado[nodoMinDist] = true;
+
+        for (int j = 0; j < 5; j++) {
+            if (arista[nodoMinDist][j] != 0 && grafo[j] != 0) {
+                int nuevaDist = distancias[nodoMinDist] + arista[nodoMinDist][j];
+                if (nuevaDist < distancias[j]) {
+                    distancias[j] = nuevaDist;
+                    padre[j] = nodoMinDist;  // Guardamos de dónde venimos
+                }
+            }
+        }
+    }
+
+    // Reconstruir camino desde fin hasta principio
+    if (distancias[indexFin] == 9999) {
+        System.out.println("No existe un camino desde " + principio + " hasta " + fin);
+        return;
+    }
+
+    System.out.println("El camino mas corto desde " + principio + " hasta " + fin + " es: ");
+
+    int nodoActual = indexFin;
+    String camino = "";
+
+    while (nodoActual != -1) {
+        camino = grafo[nodoActual] + (camino.isEmpty() ? "" : " -> ") + camino;
+        nodoActual = padre[nodoActual];
+    }
+
+    System.out.println(camino);
+    System.out.println("Costo total: " + distancias[indexFin]);
+}
+
     public void imprimirGrafo() {
         System.out.println("Nodos:");
         for (int i = 0; i < indice; i++) {
