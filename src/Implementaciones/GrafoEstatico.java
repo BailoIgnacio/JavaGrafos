@@ -10,10 +10,7 @@ public class GrafoEstatico implements GrafosTDA {
         int a = buscarIndice(principio);
         int b = buscarIndice(fin);
         arista[a][b] = pesoArista;
-        if(arista[a][b] < 0){
-            System.out.println("El peso de la arista no puede ser negativo");
-            System.out.println(grafo[10]);
-        } 
+    
 
     }
     public void agregarNodo(int valor){ // 0(1)
@@ -57,7 +54,7 @@ public class GrafoEstatico implements GrafosTDA {
         }
     }
 
-   public void djkstra(int principio, int fin) { // O(n**2)
+   public void djkstra(int origen) { // O(n^2)
     int[] distancias = new int[8];
     boolean[] visitado = new boolean[8];
     int[] padre = new int[8];
@@ -68,15 +65,14 @@ public class GrafoEstatico implements GrafosTDA {
         padre[i] = -1;
     }
 
-    int indexPrincipio = buscarIndice(principio);
-    int indexFin = buscarIndice(fin);
+    int indexOrigen = buscarIndice(origen);
 
-    if (indexPrincipio == -1 || indexFin == -1) {
-        System.out.println("Uno de los nodos no existen en el grafo.");
-        return; 
+    if (indexOrigen == -1) {
+        System.out.println("El nodo origen no existe en el grafo.");
+        return;
     }
 
-    distancias[indexPrincipio] = 0;
+    distancias[indexOrigen] = 0;
 
     for (int i = 0; i < 8; i++) {
         int indiceNodo = -1;
@@ -89,47 +85,47 @@ public class GrafoEstatico implements GrafosTDA {
             }
         }
 
-        if (indiceNodo == -1) {break;}
-  
+        if (indiceNodo == -1) break;
 
-        visitado[indiceNodo] = true; 
+        visitado[indiceNodo] = true;
 
         for (int j = 0; j < 8; j++) {
-            if (arista[indiceNodo][j] != 0 && grafo[j] != 0) {  
+            if (arista[indiceNodo][j] != 0 && grafo[j] != 0) {
                 int nuevaDist = distancias[indiceNodo] + arista[indiceNodo][j];
-                if (nuevaDist < distancias[j]) { 
-                    distancias[j] = nuevaDist;  
-                    padre[j] = indiceNodo;  
+                if (nuevaDist < distancias[j]) {
+                    distancias[j] = nuevaDist;
+                    padre[j] = indiceNodo;
                 }
             }
         }
     }
 
-    if (distancias[indexFin] == 9999) {
-        System.out.println("No existe un camino desde " + principio + " hasta " + fin);
-        return;
-    }
-
-    System.out.println("El camino mas corto desde " + principio + " hasta " + fin + " es: ");
-
-    int nodoActual = indexFin;
-    String camino = "";
-    Boolean a = true;
-
-    while (nodoActual != -1) {
-        if (a){
-            camino = camino + grafo[nodoActual];
-            a = false;
-
-        } else {
-            camino = grafo[nodoActual] + " --> "+ camino;
+    System.out.println("Distancias desde el nodo " + origen + " a los demás nodos:");
+    for (int i = 0; i < indice; i++) {
+        if (grafo[i] != 0 && i != indexOrigen) {
+            if (distancias[i] == 9999) {
+                System.out.println("No hay camino hacia " + grafo[i]);
+            } else {
+                System.out.print("Camino a " + grafo[i] + ": ");
+                imprimirCamino(indexOrigen, i, padre);
+                System.out.println(" (Costo: " + distancias[i] + ")");
+            }
         }
-        nodoActual = padre[nodoActual];
     }
-
-    System.out.println(camino);
-    System.out.println("Costo total: " + distancias[indexFin]);
 }
+
+// Función auxiliar para imprimir camino desde origen a destino
+private void imprimirCamino(int principio, int fin, int[] padre) {
+    if (fin == principio) {
+        System.out.print(grafo[principio]);
+    } else if (padre[fin] == -1) {
+        System.out.print("No hay camino");
+    } else {
+        imprimirCamino(principio, padre[fin], padre);
+        System.out.print(" --> " + grafo[fin]);
+    }
+}
+
 
     public void imprimirGrafo() { // O(n**2)
         System.out.println("Nodos:");

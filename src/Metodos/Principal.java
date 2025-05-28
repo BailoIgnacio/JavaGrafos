@@ -19,14 +19,14 @@ public static void main(String[] args) {
     grafo.agregarArista(4, 6, 30);
     grafo.agregarArista(8, 1, 3);
     grafo.agregarArista(8, 6, 50);
+    grafo.agregarArista(6, 8, 50);
     grafo.agregarArista(7, 8, 5);
 
     grafo.eliminarNodo(7);
     grafo.eliminarArista(8, 1);
     grafo.eliminarArista(8, 6);
     grafo.imprimirGrafo();
-    grafo.djkstra(2, 5);
+    grafo.djkstra(1);
 }
-
 
 }
