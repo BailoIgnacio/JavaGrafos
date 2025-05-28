@@ -3,20 +3,24 @@ import Interfaces.GrafosTDA;
 
 public class GrafoEstatico implements GrafosTDA {
     int indice = 0;
-    int[] grafo = new int[5];
-    int[][] arista = new int[5][5];
+    int[] grafo = new int[8];
+    int[][] arista = new int[8][8];
 
-    public void agregarArista(int principio, int fin, int pesoArista){
+    public void agregarArista(int principio, int fin, int pesoArista){  // O(n)
         int a = buscarIndice(principio);
         int b = buscarIndice(fin);
-        arista[a][b] = pesoArista;   
+        arista[a][b] = pesoArista;
+        if(arista[a][b] < 0){
+            System.out.println("El peso de la arista no puede ser negativo");
+            System.out.println(grafo[10]);
+        } 
 
     }
-    public void agregarNodo(int valor){
+    public void agregarNodo(int valor){ // 0(1)
         grafo[indice] = valor;
         indice ++;
     }
-    public void eliminarNodo(int valor) {
+    public void eliminarNodo(int valor) { // O(n**2)
         for (int i = 0; i < indice; i++) {
             if (grafo[i] == valor) {
                 grafo[i] = 0;
@@ -44,20 +48,21 @@ public class GrafoEstatico implements GrafosTDA {
         }
     }
 
-    public void eliminarArista(int principio, int fin){
+    public void eliminarArista(int principio, int fin){ // O(n)
         int a = buscarIndice(principio);
         int b = buscarIndice(fin);
         if(a != -1 && b != -1){
             arista[a][b] = 0;
+            arista[b][a] = 0;
         }
     }
 
-   public void djkstra(int principio, int fin) {
-    int[] distancias = new int[5];
-    boolean[] visitado = new boolean[5];
-    int[] padre = new int[5];  // Para reconstruir el camino
+   public void djkstra(int principio, int fin) { // O(n**2)
+    int[] distancias = new int[8];
+    boolean[] visitado = new boolean[8];
+    int[] padre = new int[8];
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 8; i++) {
         distancias[i] = 9999;
         visitado[i] = false;
         padre[i] = -1;
@@ -68,38 +73,38 @@ public class GrafoEstatico implements GrafosTDA {
 
     if (indexPrincipio == -1 || indexFin == -1) {
         System.out.println("Uno de los nodos no existen en el grafo.");
-        return;
+        return; 
     }
 
     distancias[indexPrincipio] = 0;
 
-    for (int i = 0; i < 5; i++) {
-        int nodoMinDist = -1;
-        int minDist = 9999;
+    for (int i = 0; i < 8; i++) {
+        int indiceNodo = -1;
+        int minPeso = 9999;
 
-        for (int j = 0; j < 5; j++) {
-            if (!visitado[j] && distancias[j] < minDist && grafo[j] != 0) {
-                minDist = distancias[j];
-                nodoMinDist = j;
+        for (int j = 0; j < 8; j++) {
+            if (!visitado[j] && distancias[j] < minPeso && grafo[j] != 0) {
+                minPeso = distancias[j];
+                indiceNodo = j;
             }
         }
 
-        if (nodoMinDist == -1) break;
+        if (indiceNodo == -1) {break;}
+  
 
-        visitado[nodoMinDist] = true;
+        visitado[indiceNodo] = true; 
 
-        for (int j = 0; j < 5; j++) {
-            if (arista[nodoMinDist][j] != 0 && grafo[j] != 0) {
-                int nuevaDist = distancias[nodoMinDist] + arista[nodoMinDist][j];
-                if (nuevaDist < distancias[j]) {
-                    distancias[j] = nuevaDist;
-                    padre[j] = nodoMinDist;  // Guardamos de dónde venimos
+        for (int j = 0; j < 8; j++) {
+            if (arista[indiceNodo][j] != 0 && grafo[j] != 0) {  
+                int nuevaDist = distancias[indiceNodo] + arista[indiceNodo][j];
+                if (nuevaDist < distancias[j]) { 
+                    distancias[j] = nuevaDist;  
+                    padre[j] = indiceNodo;  
                 }
             }
         }
     }
 
-    // Reconstruir camino desde fin hasta principio
     if (distancias[indexFin] == 9999) {
         System.out.println("No existe un camino desde " + principio + " hasta " + fin);
         return;
@@ -109,9 +114,16 @@ public class GrafoEstatico implements GrafosTDA {
 
     int nodoActual = indexFin;
     String camino = "";
+    Boolean a = true;
 
     while (nodoActual != -1) {
-        camino = grafo[nodoActual] + (camino.isEmpty() ? "" : " -> ") + camino;
+        if (a){
+            camino = camino + grafo[nodoActual];
+            a = false;
+
+        } else {
+            camino = grafo[nodoActual] + " --> "+ camino;
+        }
         nodoActual = padre[nodoActual];
     }
 
@@ -119,11 +131,12 @@ public class GrafoEstatico implements GrafosTDA {
     System.out.println("Costo total: " + distancias[indexFin]);
 }
 
-    public void imprimirGrafo() {
+    public void imprimirGrafo() { // O(n**2)
         System.out.println("Nodos:");
         for (int i = 0; i < indice; i++) {
             if (grafo[i] != 0) {
                 System.out.println("Nodo " + i + ": " + grafo[i]);
+                
             }
         }
     
@@ -139,7 +152,7 @@ public class GrafoEstatico implements GrafosTDA {
         }
     }
 
-    private int buscarIndice(int valor){
+    private int buscarIndice(int valor){ // O(n)
         for(int i=0; i< indice; i++){
             if(grafo[i] == valor){
                 return i;
